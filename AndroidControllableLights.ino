@@ -1,6 +1,7 @@
-#include "SPI.h"
-#include "Adafruit_WS2801.h"
-Adafruit_WS2801 strip = Adafruit_WS2801(50, 8, 9);
+
+#define BLUE   5
+#define GREEN  3
+#define RED    6
 
 char serialInput;
 char receiveBuffer[12];
@@ -50,10 +51,10 @@ float RunningFadeRedChange, RunningFadeGreenChange, RunningFadeBlueChange;
 void setup() {
   Serial.begin(57600); 
   
-  strip.begin();
-
-  // Update LED contents, to start they are all 'off'
-  strip.show();  
+  analogWrite(BLUE,(0));
+  analogWrite(GREEN,(0));
+  analogWrite(RED,(0));
+  
 }
 
 void loop() {
@@ -313,9 +314,11 @@ void setStripColor(char red, char green, char blue)
 {
   char count;
   for (count = 0; count < 50; count++) {
-    strip.setPixelColor(count, red, green, blue);  
+  analogWrite(RED,(red));
+  analogWrite(BLUE,(blue));
+  analogWrite(GREEN,(green));
   }
-  strip.show();
+
 }         
 
 
@@ -360,9 +363,14 @@ void DoSnap() {
 void DoRunning() {
   char count;
   for (count = 0; count < 50; count++) {
-    strip.setPixelColor(count, RunningColors[((count+RunningOffset)%RunningColorsCount)][0], RunningColors[((count+RunningOffset)%RunningColorsCount)][1], RunningColors[((count+RunningOffset)%RunningColorsCount)][2]);  
+    
+    analogWrite(RED,(RunningColors[((count+RunningOffset)%RunningColorsCount)][0]));
+    analogWrite(GREEN,(RunningColors[((count+RunningOffset)%RunningColorsCount)][1]));
+    analogWrite(BLUE,(RunningColors[((count+RunningOffset)%RunningColorsCount)][2]));
+
+
   }
-  strip.show();
+
   
   if (RunningOffset < (RunningColorsCount-1)) {
     RunningOffset++;
@@ -384,8 +392,11 @@ void DoRunningFade() {
     } 
     setStripColor(RunningFadeColors[RunningFadeCurrentColor][0], RunningFadeColors[RunningFadeCurrentColor][1], RunningFadeColors[RunningFadeCurrentColor][2]);    
   } else {
-    strip.setPixelColor(RunningFadeLED, (RunningFadeColors[RunningFadeCurrentColor][0]+(RunningFadeCurrentStep*RunningFadeRedChange)), (RunningFadeColors[RunningFadeCurrentColor][1]+(RunningFadeCurrentStep*RunningFadeGreenChange)), (RunningFadeColors[RunningFadeCurrentColor][2]+(RunningFadeCurrentStep*RunningFadeBlueChange)));    
-    strip.show();
+    
+    analogWrite(RED,((RunningFadeColors[RunningFadeCurrentColor][0]+(RunningFadeCurrentStep*RunningFadeRedChange))));
+    analogWrite(GREEN,((RunningFadeColors[RunningFadeCurrentColor][1]+(RunningFadeCurrentStep*RunningFadeGreenChange))));
+    analogWrite(BLUE,((RunningFadeColors[RunningFadeCurrentColor][2]+(RunningFadeCurrentStep*RunningFadeBlueChange))));
+ 
   }
   
   RunningFadeCurrentStep++;
