@@ -21,7 +21,7 @@ unsigned int commandCount = 0;
 // Action definitions/settings
 #define FADE_STEPS 100.0
 
-#define EEPROM_VERSION  0xAB
+const uint8_t EEPROM_VERSION = 0xAB;
 #define INIT_FLAGS_ADDR  0
 #define CONFIG_ADDR  4
 
@@ -51,11 +51,11 @@ stripCfg_t stripCfg;
 void checkInitializationFlags() {
   uint8_t initFlag;
   EEPROM_readAnything(INIT_FLAGS_ADDR, initFlag);
-  if (initFlag != EEPROM_VERSION) { // Check if the EEPROM version matches the current one
+  if (initFlag != EEPROM_VERSION) { // Check if the EEPROM version matches the current one  
     InitializeEEPromValues();
     EEPROM_updateAnything(INIT_FLAGS_ADDR, EEPROM_VERSION); // After the default values have been restored, set the flags
   } 
-  else {
+  else {  
     EEPROM_readAnything(CONFIG_ADDR, stripCfg); // Read existing config from EEProm into RAM
   }
 }
@@ -81,9 +81,17 @@ void saveUpdatedEEPromConfig(void)
 
 
 void setup() {
+
+  setStripColor(0, 0, 0);
+
   Serial.begin(57600); 
-  // setStripColor(255, 200, 50);
-  setStripColor(global_red, global_green, global_blue);    
+
+  Serial.println("Checking initialization flags");  
+  checkInitializationFlags();
+
+  Serial.print("Action: ");
+  Serial.println(stripCfg.action);
+
 }
 
 void loop() {
@@ -212,6 +220,13 @@ void loop() {
       Serial.println(commandCount);      
     }
 
+    else if (serialInput == 0x1A) { // Invalidate EEProm
+      EEPROM_updateAnything(INIT_FLAGS_ADDR, (uint8_t)0xFF); 
+      commandCount++;
+      Serial.print("Command #");      
+      Serial.println(commandCount);      
+    }    
+
   }
 
   if (stripCfg.action != ACTION_NONE && stripCfg.actionDelay > 0) {
@@ -228,8 +243,16 @@ void loop() {
       DoFade(); 
       stripCfg.actionDelay = stripCfg.SpeedDelay;
       //saveUpdatedEEPromConfig(); // commented to reduce EEProm bandwidth
-    } 
+    }
+
+    else if (stripCfg.action == ACTION_SNAP && stripCfg.SnapColorsCount > 0) {
+      DoSnap(); 
+      stripCfg.actionDelay = stripCfg.SpeedDelay;
+      //saveUpdatedEEPromConfig(); // commented to reduce EEProm bandwidth
+    }    
   }
+
+
 }
 
 void parseColorInput(char * serialBuffer)
@@ -270,7 +293,7 @@ void setStripColor(char red, char green, char blue)
   analogWrite(RED,(int) red);
   analogWrite(GREEN,(int) green);
   analogWrite(BLUE,(int) blue);
-}         
+}          
 
 void DoFade(void)
 {
