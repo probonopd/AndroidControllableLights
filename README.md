@@ -31,3 +31,8 @@ The first byte of a command package is the command byte, descriping the command 
   * 0x0D = Enable Running Fade effect (requires WS2801, hence disabled here) [Parameters: None]
   * 0x0E = Disable any effect [Parameters: None]
   * 0x1A = Invalidate EEProm
+
+Most likely I can send commands using
+```
+echo -en '\x15255;000;000;' > /dev/ttyXXX
+```
