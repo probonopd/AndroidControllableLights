@@ -1,0 +1,1 @@
+Web interface running on an OpenWrt router using a serial converter on /dev/ttyUSB0 connected to an Arduino Pro Mini running the AndroidControllableLights.ino sketch. So now we can operate the lights from any web enabled device, Android or otherwise.
