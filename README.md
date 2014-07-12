@@ -32,11 +32,20 @@ The first byte of a command package is the command byte, descriping the command 
   * 0x0E = Disable any effect [Parameters: None]
   * 0x1A = Invalidate EEProm
 
-Most likely I can send commands using
+I can successfully send commands using
 ```
-stty -F /dev/ttyUSB0 speed 57600  cs8 -cstopb -parenb -echo
-echo -en '0 ' > /dev/ttyUSB0 # Resets the device successfully into the bootloader
-echo -en '\x15255;000;000;' > /dev/ttyUSB0 # does not appear to do anything
+stty -F /dev/ttyUSB0 speed 57600  cs8 -cstopb -parenb -echo # Configure serial connection
+cat /dev/ttyUSB0 & # Otherwise sending does NOT work!
+echo -en '0 ' > /dev/ttyUSB0 # Reset the Arduino
+sleep 2
+echo -en '\x0f255;255;255;' > /dev/ttyUSB0 # Set all white
+sleep 1 
+echo -en '\x0f255;000;000;' > /dev/ttyUSB0 # Set all red
+sleep 1 
+echo -en '\x0f000;255;000;' > /dev/ttyUSB0 # Set all green
+sleep 1 
+echo -en '\x0f000;000;255;' > /dev/ttyUSB0 # Set all blue
+killall cat # Do not forget this
 
 When the app sends the 0x0f "white" command it looks like this:
 00000220  32 3b 0f 32 35 32 3b 32  35 32 3b 32 35 32 3b 0f  |2;.252;252;252;.|
