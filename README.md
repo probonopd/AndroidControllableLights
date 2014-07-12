@@ -35,7 +35,6 @@ The first byte of a command package is the command byte, descriping the command 
 Most likely I can send commands using
 ```
 stty -F /dev/ttyUSB0 speed 57600  cs8 -cstopb -parenb -echo
-echo -en '\x15255;000;000;' > /dev/ttyUSB0
+echo -en '0 ' > /dev/ttyUSB0 # Resets the device successfully into the bootloader
+echo -en '\x15255;000;000;' > /dev/ttyUSB0 # does not appear to do anything
 ```
-
-But it is not working for me so far
