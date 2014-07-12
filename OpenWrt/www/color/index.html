@@ -63,8 +63,13 @@
 				var hex=hexFromRGB(red,green,blue);
 				colorPicker.setColor("#"+hex);
 				$("#innerswatch").text(red3+";"+green3+";"+blue3+";"); /////
-				$.get("/cgi-bin/color", {command: "0x0F"+red3+";"+green3+";"+blue3+";"}, function(content){}); /////
+				cmd("0x0F"+$("#innerswatch").text());
 			}	
+
+                        function cmd(thecommand){
+				$.get("/cgi-bin/color", {command: thecommand}, function(content){});
+			}
+
 			function hexFromRGB(r,g,b){
 				var hex = [r.toString(16),g.toString(16),b.toString(16)];
 				$.each(hex,function(nr,val){
@@ -91,6 +96,50 @@
 				$("#green").slider("value",green);
 				$("#blue").slider("value",blue);		
 			}
+
+                        $("button").click(function() {
+				switch ($(event.target).attr("name")) {
+					case "stopeffects":
+						cmd("0x0E");
+						break;
+                                        case "blackout":
+                                                cmd("0x0F000;000;000;");
+                                                break;
+					case "reset":
+						cmd("0 0 0");
+						break;
+                                        case "setdelayspeed":
+                                                speed5=('00000' + $("#speed").val()).substr(-5);
+                                                cmd("0x03"+speed5+";");
+                                                break;
+                                        case "startfade":
+                                                cmd("0x04");
+                                                break;
+                                        case "resetfade":
+                                                cmd("0x02");
+                                                $("#ifade").text("0")
+                                                break;
+                                        case "addcolorfade":
+                                                cmd("0x01"+$("#innerswatch").text());
+						$("#ifade").text(parseInt($("#ifade").text())+1)
+                                                break;
+                                        case "startsnap":
+                                                cmd("0x07");
+                                                break;
+                                        case "resetsnap":
+                                                cmd("0x06");
+						$("#isnap").text("0")
+                                                break;
+                                        case "addcolorsnap":
+                                                cmd("0x05"+$("#innerswatch").text());
+						$("#isnap").text(parseInt($("#isnap").text())+1)
+                                                break;
+					default:
+						alert("Not yet implemented");
+				}
+                        });
+
+
 		});
      </script>
 <head>
@@ -105,5 +154,22 @@
 		<div id="green"></div>
 		<div id="blue"></div>
 	</div>
+	<button name="stopeffects" type="button">Stop Effects</button>
+        <button name="blackout" type="button">Black Out</button> 
+        <button name="reset" type="button">Reset</button><br>
+	<input id="speed" type="text" value="100"></input>
+	<button name="setdelayspeed" type="button">Set Delay/Speed</button> <br>
+        <button name="startfade" type="button">Start Fade</button>
+        <button name="resetfade" type="button">Reset</button>
+        <button name="addcolorfade" type="button">Add Color</button> <span id="ifade">0</span> <br>
+        <button name="startsnap" type="button">Start Snap</button>
+        <button name="resetsnap" type="button">Reset</button>
+        <button name="addcolorsnap" type="button">Add Color</button> <span id="isnap">0</span> <br>
+        <button name="startscroll" type="button">Start Scroll</button>
+        <button name="resetscroll" type="button">Reset</button>
+        <button name="addcolorscroll" type="button">Add Color</button> <br>
+        <button name="startrunfade" type="button">Start Run/Fade</button>
+        <button name="resetrunfade" type="button">Reset</button>
+        <button name="addcolorrunfade" type="button">Add Color</button> <br>
 </body>
 </html>
