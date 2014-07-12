@@ -58,6 +58,18 @@ echo -en '\x04' > /dev/ttyUSB0 # Enable fade effect
 echo -en '0 ' > /dev/ttyUSB0 # Reset
 killall cat # Do not forget this
 
+#
+# Do the same in 1 line
+#
+
+cat /dev/ttyUSB0 & # Otherwise sending does NOT work!
+echo -en '\x02\x01255;180;100;\x040 ' > /dev/ttyUSB0 
+killall cat # Do not forget this
+
+#
+# More examples
+#
+
 When the app sends the 0x0f "white" command it looks like this:
 00000220  32 3b 0f 32 35 32 3b 32  35 32 3b 32 35 32 3b 0f  |2;.252;252;252;.|
 00000230  32 35 32 3b 32 35 32 3b  32 35 32 3b 0f 32 35 32  |252;252;252;.252|
