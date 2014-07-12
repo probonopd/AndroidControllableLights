@@ -1,0 +1,21 @@
+#!/bin/sh
+
+#
+# It is not necessary to use lua/luci for very simple web interfaces
+# See http://wiki.openwrt.org/doc/howto/http.httpd
+#
+
+# Always need to send this header
+echo "Content-type: text/html"
+echo ""
+
+# Send command to serial port
+# NOTE: For me this works only if we do "cat /dev/ttyUSB0" somewhere
+COMMAND=$(echo "$QUERY_STRING" | cut -d "=" -f 2)
+replaced=$(echo $COMMAND | sed -e 's|0x|\\x|g' | sed -e 's|%3B|;|g')
+# echo "$replaced"
+echo -en "$replaced" > /dev/ttyUSB0
+
+###
+# Note that this could be INSECURE - only use this in trusted internal networks
+###
