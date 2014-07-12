@@ -54,4 +54,7 @@ When the app sends the 0x0f "black" command it looks like this:
 00000350  30 3b 30 30 30 3b 30 30  30 3b 0f 30 30 30 3b 30  |0;000;000;.000;0|
 00000360  30 30 3b 30 30 30 3b 0f  30 30 30 3b 30 30 30 3b  |00;000;.000;000;|
 
+When the app sends the 0x03 "set speed delay" command to 100 it looks like this:
+00000000  03 30 30 31 30 30 3b 03  30 30 31 30 30 3b 03 30  |.00100;.00100;.0|
+
 ```
