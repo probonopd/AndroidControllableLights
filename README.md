@@ -37,4 +37,21 @@ Most likely I can send commands using
 stty -F /dev/ttyUSB0 speed 57600  cs8 -cstopb -parenb -echo
 echo -en '0 ' > /dev/ttyUSB0 # Resets the device successfully into the bootloader
 echo -en '\x15255;000;000;' > /dev/ttyUSB0 # does not appear to do anything
+
+When the app sends the 0x0f "white" command it looks like this:
+00000220  32 3b 0f 32 35 32 3b 32  35 32 3b 32 35 32 3b 0f  |2;.252;252;252;.|
+00000230  32 35 32 3b 32 35 32 3b  32 35 32 3b 0f 32 35 32  |252;252;252;.252|
+00000240  3b 32 35 32 3b 32 35 32  3b 0f 32 35 32 3b 32 35  |;252;252;.252;25|
+00000250  32 3b 32 35 32 3b 0f 32  35 32 3b 32 35 32 3b 32  |2;252;.252;252;2|
+00000260  35 32 3b 0f 32 35 32 3b  32 35 32 3b 32 35 32 3b  |52;.252;252;252;|
+00000270  0f 32 35 32 3b 32 35 32  3b 32 35 32 3b 0f 32 35  |.252;252;252;.25|
+
+When the app sends the 0x0f "black" command it looks like this:
+00000310  3b 30 30 30 3b 30 30 30  3b 0f 30 30 30 3b 30 30  |;000;000;.000;00|
+00000320  30 3b 30 30 30 3b 0f 30  30 30 3b 30 30 30 3b 30  |0;000;.000;000;0|
+00000330  30 30 3b 0f 30 30 30 3b  30 30 30 3b 30 30 30 3b  |00;.000;000;000;|
+00000340  0f 30 30 30 3b 30 30 30  3b 30 30 30 3b 0f 30 30  |.000;000;000;.00|
+00000350  30 3b 30 30 30 3b 30 30  30 3b 0f 30 30 30 3b 30  |0;000;000;.000;0|
+00000360  30 30 3b 30 30 30 3b 0f  30 30 30 3b 30 30 30 3b  |00;000;.000;000;|
+
 ```
