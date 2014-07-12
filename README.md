@@ -47,6 +47,17 @@ sleep 1
 echo -en '\x0f000;000;255;' > /dev/ttyUSB0 # Set all blue
 killall cat # Do not forget this
 
+# 
+# Set warm white color after and save to EEPROM
+# 
+
+cat /dev/ttyUSB0 & # Otherwise sending does NOT work!
+echo -en '\x02' > /dev/ttyUSB0 # Reset fade colors
+echo -en '\x01255;180;100;' > /dev/ttyUSB0 # Add warm white fade color
+echo -en '\x04' > /dev/ttyUSB0 # Enable fade effect
+echo -en '0 ' > /dev/ttyUSB0 # Reset
+killall cat # Do not forget this
+
 When the app sends the 0x0f "white" command it looks like this:
 00000220  32 3b 0f 32 35 32 3b 32  35 32 3b 32 35 32 3b 0f  |2;.252;252;252;.|
 00000230  32 35 32 3b 32 35 32 3b  32 35 32 3b 0f 32 35 32  |252;252;252;.252|
