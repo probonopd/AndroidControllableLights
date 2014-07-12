@@ -34,5 +34,8 @@ The first byte of a command package is the command byte, descriping the command 
 
 Most likely I can send commands using
 ```
-echo -en '\x15255;000;000;' > /dev/ttyXXX
+stty -F /dev/ttyUSB0 speed 57600  cs8 -cstopb -parenb -echo
+echo -en '\x15255;000;000;' > /dev/ttyUSB0
 ```
+
+But it is not working for me so far
